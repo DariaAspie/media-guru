@@ -3,7 +3,7 @@ The primary objective of the web application is to furnish a sophisticated tool 
 
 The developmental aspiration is to engineer a robust and user-friendly platform dedicated to the meticulous organization and utilization of video content. This entails proficiently storing, administrating, analyzing, and granting access to video resources, catering to the needs of both regular users and administrators alike.
 <br>
-
+*В этом проекте беда с чистотой кода, так как это КУРСАЧ, у преподов свои дибильные требования к коду, которые приходилось соблюдать*
 
 # Getting started
 
