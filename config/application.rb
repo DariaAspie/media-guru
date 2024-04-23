@@ -14,6 +14,8 @@ require 'action_mailbox/engine'
 require 'action_text/engine'
 require 'action_view/railtie'
 require 'action_cable/engine'
+require 'net/http'
+
 # require "rails/test_unit/railtie"
 
 # Require the gems listed in Gemfile, including any gems

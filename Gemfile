@@ -89,6 +89,10 @@ group :development, :test do
 
   # It's a library for generating fake data such as names, addresses, and phone numbers. [https://github.com/faker-ruby/faker]
   gem 'faker'
+
+  gem "letter_opener"
+
+  gem "dotenv"
 end
 
 group :development do

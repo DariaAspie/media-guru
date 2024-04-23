@@ -1,16 +1,18 @@
-<h2>Resend confirmation instructions</h2>
 
-<%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
-  <%= render "users/shared/error_messages", resource: resource %>
+<div class="container mp-4 form-shadow">
+  <h2 class="text-center">Переотправка письма с подтверждением почты</h2><br>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email", value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email) %>
-  </div>
+  <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
+    <%= render "users/shared/error_messages", resource: resource %>
 
-  <div class="actions">
-    <%= f.submit "Resend confirmation instructions" %>
-  </div>
-<% end %>
+    <div class="input-group mb-3">
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email), placeholder: "Электронная почта", class: "form-control" %>
+    </div>
 
-<%= render "users/shared/links" %>
+    <div class="actions">
+      <%= f.submit "Переотправить", class: "btn btn-primary form-button" %>
+    </div>
+  <% end %>
+  <br>
+  <div class="text-center"><%= render "users/shared/links"%></div>
+</div>

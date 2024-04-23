@@ -8,7 +8,7 @@ User.find_or_create_by(email: 'admin@example.com') do |user|
   user.role = 1
 end
 
-50.times.map do |index|
+10.times.map do |index|
   User.find_or_create_by(email: "user_#{index}@example.com") do |user|
     user.username = Faker::Internet.username
     user.password = 'password'

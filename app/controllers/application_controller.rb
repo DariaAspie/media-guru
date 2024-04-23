@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  before_action :configure_sign_up_params, only: [:create], if: :devise_controller?
+  before_action :configure_permitted_parameters, only: [:create, :update], if: :devise_controller?
 
   protected
 
-  def configure_sign_up_params
-    attributes = %i[username email password password password_confirmation]
+  def configure_permitted_parameters
+    attributes = %i[username email password password_confirmation]
     devise_parameter_sanitizer.permit(:sign_up, keys: attributes)
+    devise_parameter_sanitizer.permit(:account_update, keys: attributes)
   end
 
   private
@@ -16,4 +17,5 @@ class ApplicationController < ActionController::Base
     UserActivity.create(user_id: current_user.id, action: 'login', login_time: Time.now.utc)
     root_path
   end
+
 end
