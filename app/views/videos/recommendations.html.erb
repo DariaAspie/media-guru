@@ -1,0 +1,88 @@
+<div class="border rounded">
+  <div class="container mb-4">
+    <br>
+      <h1>Рекомендации</h1><br>
+      <% if @recommendations.empty? %>
+        <h3 class="p-4">Для подбора рекомендаций необходимо иметь просмотренные видео.</h3>
+        <p class="p-4">* Видео считается просмотренным когда вы его отмечаете таковым соответствующим функционалом на странице самого видео.</p>
+      <% else %>
+        <%= render partial: "videos/filter" %>
+        <% @recommendations.reverse.each_with_index do |video, index| %>
+          <div class="card card-video">
+            <div class="card-body">
+              <table>
+                <tr>
+                  <td class="table-pic" onclick="location.href='<%= video_path(video.id) %>'">
+                    <% if video.picture_url %>
+                      <%= image_tag video.picture_url.url, height: '150', width: '255', class: "rounded float-left" || :no_picture %>
+                    <% end %>
+                  </td>
+                  <td class="table-text"  onclick="location.href='<%= video_path(video.id) %>'">
+                    <div class="text-index"><b><%= video.video_name %></b></div>
+                    <% if video.video_languages.present? %>
+                      <% video.video_languages.each do |i| %>
+                        <span class="badge bg-light text-dark">
+                          <div class="container-line">
+                              <%= i.language.language_name %>
+                          </div>
+                        </span>
+                      <% end %><br>
+                    <% end %>
+                    <% if video.video_tags.present? %>
+                      <% video.video_tags.each do |i| %>
+                        <span class="badge bg-light text-dark">
+                          <div class="container-line">
+                              <%= i.tag.tag_name %>
+                          </div>
+                        </span>
+                      <% end %><br>
+                    <% end %>
+                    <% if video.video_speakers.present? %>
+                      <% video.video_speakers.each do |i| %>
+                        <span class="badge bg-light text-dark">
+                          <div class="container-line">
+                              <%= i.speaker.speaker_fio %>
+                          </div>
+                        </span>
+                      <% end %><br>
+                    <% end %>
+                    <% if video.video_categories.present? %>
+                      <% video.video_categories.each do |i| %>
+                        <span class="badge bg-light text-dark">
+                          <div class="container-line">
+                              <%= i.category.category_name %>
+                          </div>
+                        </span>
+                      <% end %>
+                    <% end %>
+                  </td>
+                  <% if Favorite.favorite_exist(video.id, current_user).present? %>
+                    <td class='table-button'>
+                      <%= button_to 'В избранных', delete_from_videos_favorites_path(video), method: :post, class: 'btn btn-danger btn-favorites table-btn' %>
+                    </td>
+                  <% else %>
+                    <td class='table-button'>
+                      <%= button_to 'В избранные', add_to_favorites_path(video), method: :post, class: 'btn btn-outline-danger btn-favorites table-btn' %>
+                    </td>
+                  <% end %>
+                  <% if current_user&.admin? %>
+                    <td class='table-button'>
+                      <%= link_to "Изменить", edit_video_path(video.id), class: "btn btn-outline-danger table-btn" %>
+                    </td>
+                    <td class='table-button'>
+                      <%= button_to "Удалить", video_path(video.id), method: :delete, class: "btn btn-danger table-btn" %>
+                    </td>
+                  <% end %>
+                </tr>
+              </table>
+            </div>
+          </div>
+        <% end %>
+        <div class="d-flex justify-content-center">
+          <%= paginate @recommendations %><div>
+          <%= render partial: 'videos/dropdown_pag_rec' %></div>
+        </div>
+      <% end %>
+  </div>
+</div>
+

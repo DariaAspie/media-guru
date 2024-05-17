@@ -11,6 +11,7 @@ Rails.application.routes.draw do
 
   post 'videos/:id/add_to_watched', to: 'videos#add_to_watched', as: 'add_to_watched'
   post 'videos/:id/delete_from_watched', to: 'videos#delete_from_watched', as: 'delete_from_watched'
+  get 'videos/recommendations', to: 'videos#recommendations', as: 'recommendations'
 
   get 'users_control/index'
 

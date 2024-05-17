@@ -5,8 +5,8 @@ class CreateVideos < ActiveRecord::Migration[7.0]
     create_table :videos do |t|
       t.string :video_name, null: false
       t.text :video_description, null: false
-      t.string :video_url, null: false
-      t.string :picture_url, null: false
+      t.string :video_url
+      t.string :picture_url
 
       t.timestamps
     end

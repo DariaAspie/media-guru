@@ -2,7 +2,7 @@
   <div class="border rounded show-video item">
     <div class="container mb-4">
       <br>
-      <h4><%= @video.video_name %></h4>
+      <h4><%= @video.id %> <%= @video.video_name %></h4>
       <%= video_tag @video.video_url.to_s, controls: true, class: "video rounded" %>
       <div class="rating">
         <div class="stars">

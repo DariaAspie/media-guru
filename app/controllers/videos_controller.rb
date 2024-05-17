@@ -133,6 +133,10 @@ class VideosController < ApplicationController
     end
   end
 
+  def recommendations
+    @recommendations = Video.sorted_by_user_preferences(current_user).page(params[:page]).per(params[:per_page])
+  end
+
   private
 
   def set_video

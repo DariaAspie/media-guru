@@ -30,4 +30,34 @@ class Video < ApplicationRecord
   scope :by_language, ->(language_id) { joins(:video_languages).where(video_languages: { language_id: }) }
   scope :by_speaker, ->(speaker_id) { joins(:video_speakers).where(video_speakers: { speaker_id: }) }
   scope :by_category, ->(category_id) { joins(:video_categories).where(video_categories: { category_id: }) }
+
+  def self.sorted_by_user_preferences(user)
+    watched_video_ids = user.watched_videos.pluck(:video_id)
+
+    tags = Tag.joins(videos: :watched_videos).where(watched_videos: { user_id: user.id }).group(:id).order('COUNT(videos.id) DESC')
+    languages = Language.joins(videos: :watched_videos).where(watched_videos: { user_id: user.id }).group(:id).order('COUNT(videos.id) DESC')
+    categories = Category.joins(videos: :watched_videos).where(watched_videos: { user_id: user.id }).group(:id).order('COUNT(videos.id) DESC')
+    speakers = Speaker.joins(videos: :watched_videos).where(watched_videos: { user_id: user.id }).group(:id).order('COUNT(videos.id) DESC')
+
+    sorted_characteristics = {
+      tags: tags.pluck(:id),
+      languages: languages.pluck(:id),
+      categories: categories.pluck(:id),
+      speakers: speakers.pluck(:id)
+    }
+
+    video_scope = Video.where.not(id: watched_video_ids)
+                       .left_joins(:tags, :languages, :categories, :speakers)
+                       .where(
+                         'tags.id IN (:tag_ids) OR languages.id IN (:language_ids) OR categories.id IN (:category_ids) OR speakers.id IN (:speaker_ids)',
+                         tag_ids: sorted_characteristics[:tags],
+                         language_ids: sorted_characteristics[:languages],
+                         category_ids: sorted_characteristics[:categories],
+                         speaker_ids: sorted_characteristics[:speakers]
+                       )
+                       .distinct
+                       .order(rating: :desc)
+
+    video_scope
+  end
 end

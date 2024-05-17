@@ -2,16 +2,13 @@
   <button class="btn btn-secondary dropdown-toggle pag" type="button" data-bs-toggle="dropdown" aria-expanded="false">Пагинация</button>
   <ul class="dropdown-menu">
     <li>
+      <%= link_to "5", videos_path(per_page: 5, search: params[:search]), class: "btn btn-secondary btn-short-width dropdown-item" %>
+    </li>
+    <li>
       <%= link_to "10", videos_path(per_page: 10, search: params[:search]), class: "btn btn-secondary btn-short-width dropdown-item" %>
     </li>
     <li>
       <%= link_to "25", videos_path(per_page: 25, search: params[:search]), class: "btn btn-secondary btn-short-width dropdown-item" %>
-    </li>
-    <li>
-      <%= link_to "30", videos_path(per_page: 30, search: params[:search]), class: "btn btn-secondary btn-short-width dropdown-item" %>
-    </li>
-    <li>
-      <%= link_to "50", videos_path(per_page: 50, search: params[:search]), class: "btn btn-secondary btn-short-width dropdown-item" %>
     </li>
   </ul>
 </div>
