@@ -1,17 +1,20 @@
 # frozen_string_literal: true
 
-require './app/services/search_video_service.rb'
+require './app/services/search_video_service'
 
 class VideosController < ApplicationController
-  before_action :set_video, only: %i[edit show update destroy add_to_watched delete_from_watched add_to_favorites delete_from_favorites delete_from_videos_favorites]
+  before_action :set_video,
+                only: %i[edit show update destroy add_to_watched delete_from_watched add_to_favorites delete_from_favorites
+                         delete_from_videos_favorites]
   before_action :set_category_videos, only: :popularity_report
   before_action :set_speaker_videos, only: :popularity_report
   before_action :set_language_videos, only: :popularity_report
+  before_action :set_videos_report, only: :popularity_report
 
   def index
     @videos = SearchVideoService.new(
       search_params:
-      ).call.order(:video_name).page(params[:page]).per(params[:per_page])
+    ).call.order('created_at DESC').page(params[:page]).per(params[:per_page])
   end
 
   def show
@@ -53,7 +56,7 @@ class VideosController < ApplicationController
   end
 
   def add_to_favorites
-    @favorite = current_user.favorites.new()
+    @favorite = current_user.favorites.new
     @favorite.video_id = @video.id
 
     if @favorite.save
@@ -80,7 +83,7 @@ class VideosController < ApplicationController
   end
 
   def add_to_watched
-    @watched_video = current_user.watched_videos.new()
+    @watched_video = current_user.watched_videos.new
     @watched_video.video_id = @video.id
 
     if @watched_video.save
@@ -134,7 +137,9 @@ class VideosController < ApplicationController
   end
 
   def recommendations
-    @recommendations = Video.sorted_by_user_preferences(current_user).page(params[:page]).per(params[:per_page])
+    @recommendations = SearchVideoService.new(
+      search_params:
+    ).call_recommendations(current_user).order('created_at DESC').page(params[:page]).per(params[:per_page])
   end
 
   private
@@ -165,79 +170,74 @@ class VideosController < ApplicationController
 
   def set_category_videos
     videos_by_category = ActiveRecord::Base.connection.execute("
-      SELECT category_name, video_name, views_count
-      FROM (
-          SELECT categories.category_name, videos.video_name, COUNT(watched_videos.id) AS views_count,
-                ROW_NUMBER() OVER (PARTITION BY categories.id ORDER BY COUNT(watched_videos.id) DESC) AS rn
-          FROM categories
-          CROSS JOIN videos
-          LEFT JOIN video_categories ON categories.id = video_categories.category_id
-          LEFT JOIN watched_videos ON videos.id = watched_videos.video_id
-          GROUP BY categories.id, videos.id
-      ) AS ranked_videos
-      WHERE rn <= 5
-      ORDER BY category_name, views_count DESC
+      SELECT categories.category_name, COUNT(watched_videos.id) AS views_count
+      FROM categories
+      LEFT JOIN video_categories ON categories.id = video_categories.category_id
+      LEFT JOIN videos ON video_categories.video_id = videos.id
+      LEFT JOIN watched_videos ON videos.id = watched_videos.video_id
+      GROUP BY categories.category_name
+      ORDER BY views_count DESC
     ")
 
-    @category_videos = {}
-    videos_by_category.each do |row|
+    @category_videos = videos_by_category.each_with_object({}) do |row, hash|
       category_name = row['category_name']
-      video_name = row['video_name']
+      views_count = row['views_count']
 
-      @category_videos[category_name] ||= []
-      @category_videos[category_name] << video_name
+      hash[category_name] = views_count
     end
   end
 
   def set_speaker_videos
     videos_by_speaker = ActiveRecord::Base.connection.execute("
-      SELECT speaker_fio, video_name, views_count
-      FROM (
-          SELECT speakers.speaker_fio, videos.video_name, COUNT(watched_videos.id) AS views_count,
-                ROW_NUMBER() OVER (PARTITION BY speakers.id ORDER BY COUNT(watched_videos.id) DESC) AS rn
-          FROM speakers
-          CROSS JOIN videos
-          LEFT JOIN video_speakers ON speakers.id = video_speakers.speaker_id
-          LEFT JOIN watched_videos ON videos.id = watched_videos.video_id
-          GROUP BY speakers.id, videos.id
-      ) AS ranked_videos
-      WHERE rn <= 5
-      ORDER BY speaker_fio, views_count DESC
+      SELECT speakers.speaker_fio, COUNT(watched_videos.id) AS views_count
+      FROM speakers
+      LEFT JOIN video_speakers ON speakers.id = video_speakers.speaker_id
+      LEFT JOIN videos ON video_speakers.video_id = videos.id
+      LEFT JOIN watched_videos ON videos.id = watched_videos.video_id
+      GROUP BY speakers.speaker_fio
+      ORDER BY views_count DESC
     ")
 
-    @speaker_videos = {}
-    videos_by_speaker.each do |row|
+    @speaker_videos = videos_by_speaker.each_with_object({}) do |row, hash|
       speaker_fio = row['speaker_fio']
-      video_name = row['video_name']
+      views_count = row['views_count']
 
-      @speaker_videos[speaker_fio] ||= []
-      @speaker_videos[speaker_fio] << video_name
+      hash[speaker_fio] = views_count
     end
   end
 
   def set_language_videos
     videos_by_language = ActiveRecord::Base.connection.execute("
-      SELECT language_name, video_name, views_count
-      FROM (
-          SELECT languages.language_name, videos.video_name, COUNT(watched_videos.id) AS views_count,
-                ROW_NUMBER() OVER (PARTITION BY languages.id ORDER BY COUNT(watched_videos.id) DESC) AS rn
-          FROM languages
-          CROSS JOIN videos
-          LEFT JOIN video_languages ON languages.id = video_languages.language_id
-          LEFT JOIN watched_videos ON videos.id = watched_videos.video_id
-          GROUP BY languages.id, videos.id
-      ) AS ranked_videos
-      WHERE rn <= 5
-      ORDER BY language_name, views_count DESC
+      SELECT languages.language_name, COUNT(watched_videos.id) AS views_count
+      FROM languages
+      LEFT JOIN video_languages ON languages.id = video_languages.language_id
+      LEFT JOIN videos ON video_languages.video_id = videos.id
+      LEFT JOIN watched_videos ON videos.id = watched_videos.video_id
+      GROUP BY languages.language_name
+      ORDER BY views_count DESC
     ")
 
-    @language_videos = {}
-    videos_by_language.each do |row|
+    @language_videos = videos_by_language.each_with_object({}) do |row, hash|
       language_name = row['language_name']
-      video_name = row['video_name']
+      views_count = row['views_count']
 
-      @language_videos[language_name] ||= []
-      @language_videos[language_name] << video_name
+      hash[language_name] = views_count
+    end
+  end
+
+  def set_videos_report
+    videos_by_day = ActiveRecord::Base.connection.execute("
+      SELECT DATE(watched_videos.created_at) AS view_date, COUNT(watched_videos.id) AS views_count
+      FROM watched_videos
+      GROUP BY view_date
+      ORDER BY views_count DESC
+    ")
+
+    @daily_views = videos_by_day.each_with_object({}) do |row, hash|
+      view_date = row['view_date']
+      views_count = row['views_count']
+
+      hash[view_date] = views_count
     end
   end
 end

@@ -1,22 +1,29 @@
-<h2>Количество видео по категориям</h2>
+<div class="border mx-4 rounded">
+  <div class="container mb-4">
+    <br>
+    <h1>Количество видео по категориям</h1>
+    <br>
+    <div class="d-flex justify-content-around popularity-report">
+      <table class="table">
+        <tr>
+          <th scope="col">Категория</th>
+          <th scope="col">Количество видео</th>
+        </tr>
+        <% total_videos = 0 %>
+        <% @videos_count.each do |category_name, count| %>
+          <tr>
+            <td><%= category_name %></td>
+            <td><%= count.first %></td> <!-- Используйте .first для получения первого элемента массива count -->
+          </tr>
+          <% total_videos += count.first %> <!-- Используйте .first для получения первого элемента массива count -->
+        <% end %>
+        <tr>
+          <td><strong>Всего</strong></td>
+          <td><strong><%= total_videos %></strong></td>
+        </tr>
+      </table>
 
-<table class="user-report-table report">
-  <tr>
-    <th>Категория</th>
-    <th>Количество видео</th>
-  </tr>
-  <% total_videos = 0 %>
-  <% @videos_count.each do |category_name, count| %>
-    <tr>
-      <td><%= category_name %></td>
-      <td><%= count.first %></td> <!-- Используйте .first для получения первого элемента массива count -->
-    </tr>
-    <% total_videos += count.first %> <!-- Используйте .first для получения первого элемента массива count -->
-  <% end %>
-  <tr>
-    <td><strong>Всего</strong></td>
-    <td><strong><%= total_videos %></strong></td>
-  </tr>
-</table>
-
-<p>Всего категорий: <%= @videos_count.keys.count %></p>
+      <%= pie_chart @videos_count, width: "1900px", height: "500px" %>
+    </div>
+  </div>
+</div>

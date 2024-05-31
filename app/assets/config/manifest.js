@@ -5,3 +5,5 @@
 //= require bootstrap
 //= require_tree.
 //= link styles.css
+//= require chartkick
+//= require Chart.bundle

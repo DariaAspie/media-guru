@@ -95,6 +95,7 @@ GEM
     carrierwave-video (0.6.0)
       carrierwave
       streamio-ffmpeg
+    chartkick (5.0.7)
     childprocess (5.0.0)
     coderay (1.1.3)
     concurrent-ruby (1.2.2)
@@ -344,6 +345,7 @@ DEPENDENCIES
   bootstrap
   carrierwave
   carrierwave-video
+  chartkick
   cssbundling-rails
   debug
   devise

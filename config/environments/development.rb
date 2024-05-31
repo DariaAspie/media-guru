@@ -4,7 +4,7 @@ require 'active_support/core_ext/integer/time'
 
 module Net
   class HTTP < Protocol
-    alias_method :old_initialize, :initialize
+    alias old_initialize initialize
 
     def initialize(address, port = nil, open_timeout: 120)
       old_initialize(address, port)
@@ -58,7 +58,7 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.default_url_options = { host: 'localhost:3000' }
   config.action_mailer.delivery_method = :letter_opener
-config.action_mailer.perform_deliveries = true
+  config.action_mailer.perform_deliveries = true
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 

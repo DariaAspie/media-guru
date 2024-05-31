@@ -1,13 +1,29 @@
-<h1>Отчет по активности пользователей</h1>
-<table class="user-report-table report">
-  <tr>
-    <th>Пользователь</th>
-    <th>Время прибывания <br>в веб-приложении</th>
-  </tr>
-  <% @user_sessions.reverse.each do |user_id, data| %>
-    <tr>
-      <td><%= User.find(user_id).email %></td>
-      <td><%= time_format(data[:total_time].round(2)) %></td>
-    </tr>
-  <% end %>
-</table>
+<div class="border rounded mx-4">
+  <div class="container mb-4">
+    <br>
+      <h1>Отчет по активности пользователей</h1>
+      <br>
+      <h2>График по активность просмотров видеоконтента</h2>
+    <%= area_chart @daily_views %>
+    <br>
+    <h2>Метрики по активности посещаемости веб-приложения</h2>
+    <div class="d-flex justify-content-around popularity-report">
+      <table class="table">
+        <tr>
+          <th>Пользователь</th>
+          <th>Время прибывания <br>в веб-приложении</th>
+        </tr>
+        <% @user_sessions.reverse.each do |user_id, data| %>
+          <tr>
+            <td><%= User.find(user_id).email %></td>
+            <td><%= time_format(data[:total_time].round(2)) %></td>
+          </tr>
+        <% end %>
+      </table>
+      <div class="mx-4"><br>
+        <h4>Оценка количества пользователей посетившийх веб-приложение <h4>
+        <br><%= pie_chart @user_activity_metrics %>
+      </div>
+    </div>
+  </div>
+</div>

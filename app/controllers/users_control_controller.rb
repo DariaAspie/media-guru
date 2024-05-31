@@ -8,7 +8,9 @@ class UsersControlController < ApplicationController
   before_action :set_user_sessions, only: :user_activity_report
 
   def index
-    @users = User.all.page(params[:page]).per(params[:per_page])
+    @users = SearchUserService.new(
+      search_params:
+    ).call.page(params[:page]).per(params[:per_page])
   end
 
   def show; end
@@ -25,7 +27,6 @@ class UsersControlController < ApplicationController
   end
 
   def user_activity_report
-    # Преобразуем время из секунд в минуты
     @user_sessions.each_value do |data|
       data[:total_time] /= 60
     end
@@ -34,10 +35,36 @@ class UsersControlController < ApplicationController
       data[:total_time]
     end
 
+    videos_by_day = ActiveRecord::Base.connection.execute("
+      SELECT DATE(watched_videos.created_at) AS view_date, COUNT(watched_videos.id) AS views_count
+      FROM watched_videos
+      GROUP BY view_date
+      ORDER BY views_count DESC
+    ")
+
+    @daily_views = videos_by_day.each_with_object({}) do |row, hash|
+      view_date = row['view_date']
+      views_count = row['views_count']
+
+      hash[view_date] = views_count
+    end
+
+    total_time_users = @user_sessions.partition { |_user_id, data| (data[:total_time]).positive? }
+
+    users_with_time = total_time_users[0].size
+    users_without_time = total_time_users[1].size + User.left_joins(:user_activities)
+                                                        .where(user_activities: { user_id: nil }).count
+
+    @user_activity_metrics = { "Посещали": users_with_time, "Не посещали": users_without_time }
+
+    @user_activity = { visited: users_with_time, not_visited: users_without_time }
+
     respond_to do |format|
       format.html
       format.pdf do
-        render pdf: 'user_activity_report', template: 'users_control/user_activity_report', encoding: 'utf8'
+        render pdf: 'user_activity_report',
+               template: 'users_control/user_activity_report',
+               encoding: 'utf8'
       end
     end
   end
@@ -53,7 +80,7 @@ class UsersControlController < ApplicationController
   end
 
   def set_user_sessions
-    @user_sessions = UserActivity.all.order(:created_at).each_with_object({}) do |activity, sessions|
+    @user_sessions = UserActivity.order(:created_at).each_with_object({}) do |activity, sessions|
       sessions[activity.user_id] ||= { user_id: activity.user_id, total_time: 0 }
 
       if activity.action == 'login'
@@ -62,5 +89,9 @@ class UsersControlController < ApplicationController
         sessions[activity.user_id][:total_time] += (activity.logout_time - sessions[activity.user_id][:login_time])
       end
     end
+  end
+
+  def search_params
+    params.permit(:search)
   end
 end

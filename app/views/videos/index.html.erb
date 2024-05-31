@@ -1,4 +1,4 @@
-<div class="border rounded">
+<div class="border rounded mx-4">
   <div class="container mb-4">
     <br>
       <h1>Каталог</h1><br>
@@ -25,7 +25,7 @@
         <h2 class="text-center p-4">Нет видео</h2>
       <% else %>
         <%= render partial: "videos/filter" %>
-        <% @videos.reverse.each_with_index do |video, index| %>
+        <% @videos.each_with_index do |video, index| %>
           <div class="card card-video">
             <div class="card-body">
               <table>

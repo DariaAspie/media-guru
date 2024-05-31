@@ -4,7 +4,7 @@ class User < ApplicationRecord
   has_many :reviews, dependent: :destroy
   has_many :marks
   has_many :favorites
-  has_many :watched_videos
+  has_many :watched_videos, dependent: :destroy
   has_many :user_activities, dependent: :destroy
 
   # Include default devise modules. Others available are:
@@ -19,6 +19,8 @@ class User < ApplicationRecord
   validates :username, presence: true
   validates :email, presence: true, format: { with: /^[^@\s]+@[^@\s]+\.[^@\s]+$/, multiline: true }
   validates :password, presence: true, length: { within: 6..20 }
+
+  scope :by_name, ->(name) { where('username like ?', "%#{name}%") }
 
   def set_default_role
     self.role ||= :user

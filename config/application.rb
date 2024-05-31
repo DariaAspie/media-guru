@@ -45,8 +45,10 @@ module MediaGuru
       end
     end
 
-    config.assets.paths << "#{Rails.root}/app/assets/videos"
+    config.assets.paths << Rails.root.join("app/assets/videos").to_s
 
     config.assets.enabled = true
+
+    config.assets.precompile = ['*.js', '*.css', '*.css.erb', '*.json', '*.yaml', '*.xml', '*.sass']
   end
 end

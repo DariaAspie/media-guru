@@ -1,16 +1,24 @@
-<div class="border rounded">
+<div class="border rounded mx-4">
   <div class="container mb-4"><br>
     <div class="container-users">
-      <div><h3>Пользователи</h3></div>
+      <div><h1>Пользователи</h1></div>
       <div>
-        <div class="btn-group" role="group">
-          <%= link_to "Отчет по активности полььзователей", users_control_user_activity_report_path, class: "btn btn-outline-secondary btn-sm" %>
-          <%= link_to ".pdf", '/users_control/user_activity_report.pdf', class: "btn btn-outline-secondary btn-sm" %>
+        <div class="btn-group mx-4" role="group">
+          <%= link_to "Отчет по активности полььзователей", users_control_user_activity_report_path, class: "btn btn-outline-secondary mt-2" %>
+          <%= link_to ".pdf", '/users_control/user_activity_report.pdf', class: "btn btn-outline-secondary btn mt-2" %>
         </div>
       </div>
     </div>
     <br>
     <% if current_user&.admin? %>
+      <%= form_with url: users_control_index_path, method: :get do |f| %>
+        <div class="search-form">
+          <div class="input-group">
+            <%= f.text_field :search, class: "form-control", placeholder: "Поиск" %>
+            <%= f.submit "Поиск", class: "btn btn-outline-secondary search" %>
+          </div>
+        </div>
+      <% end %>
       <table class="table table-hover">
         <tr>
           <th class="bg-transparent">#</th>

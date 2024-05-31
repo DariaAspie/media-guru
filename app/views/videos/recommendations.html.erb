@@ -1,12 +1,62 @@
-<div class="border rounded">
+<div class="border rounded mx-4">
   <div class="container mb-4">
     <br>
-      <h1>Рекомендации</h1><br>
+      <h1>Рекомендации <small><small><small><small><small>(отбираются по характеристикам ваших просмотренных видео)</small></small></small></small></small></h1> <br>
       <% if @recommendations.empty? %>
         <h3 class="p-4">Для подбора рекомендаций необходимо иметь просмотренные видео.</h3>
         <p class="p-4">* Видео считается просмотренным когда вы его отмечаете таковым соответствующим функционалом на странице самого видео.</p>
       <% else %>
-        <%= render partial: "videos/filter" %>
+      <%= form_with url: recommendations_path, method: :get do |f| %>
+        <div class="search-form">
+          <div class="input-group">
+            <%= f.text_field :search, class: "form-control", placeholder: "Поиск" %>
+            <%= f.submit "Поиск", class: "btn btn-outline-secondary search" %>
+          </div>
+        </div>
+      <% end %>
+        <%= form_with url: recommendations_path, method: :get do |f| %>
+          <div class="filter-container">
+            <div>
+              <%= f.collection_select :tag_id,
+                                      Tag.all,
+                                      :id,
+                                      :tag_name,
+                                      { prompt: "Тэг", selected: "", disabled: "" },
+                                      { class: "form-control",
+                                        placeholder: "Выбор тега" } %>
+            </div>
+            <div>
+              <%= f.collection_select :language_id,
+                                      Language.all,
+                                      :id,
+                                      :language_name,
+                                      { prompt: "Язык", selected: "", disabled: "" },
+                                      { class: "form-control",
+                                        placeholder: "Выбор языка" } %>
+            </div>
+            <div>
+              <%= f.collection_select :speaker_id,
+                                      Speaker.all,
+                                      :id,
+                                      :speaker_fio,
+                                      { prompt: "Спикер", selected: "", disabled: "" },
+                                      { class: "form-control",
+                                        placeholder: "Выбор спикера" } %>
+            </div>
+            <div>
+              <%= f.collection_select :category_id,
+                                      Category.all,
+                                      :id,
+                                      :category_name,
+                                      { prompt: "Категория", selected: "", disabled: "" },
+                                      { class: "form-control",
+                                        placeholder: "Выбор категории" } %>
+            </div>
+            <div>
+              <%= f.submit "Фильтровать", class: "btn btn-outline-secondary search" %>
+            </div>
+          </div>
+        <% end %>
         <% @recommendations.reverse.each_with_index do |video, index| %>
           <div class="card card-video">
             <div class="card-body">

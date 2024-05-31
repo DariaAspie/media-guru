@@ -1,52 +1,43 @@
-
-<h1>Популярность видео</h1>
-<div class="popularity-container">
-  <div>
-    <table class="popularity-table">
-      <tr><th colspan="2"><h3>по категориям</h3></th></tr>
-      <% @category_videos.each do |category, videos| %>
-        <tr><th><%= category %></th>
-          <td>
-            <ul>
-              <% videos.each do |video| %>
-              <li><%= video %></li>
-              <% end %>
-            </ul>
-          </td>
-        </tr>
-      <% end %>
-    </table>
-  </div>
-  <div>
-    <table class="popularity-table">
-      <tr><th colspan="2"><h3>по спикерам</h3></th></tr>
-      <% @speaker_videos.each do |speaker, videos| %>
-        <tr><th><%= speaker %></th>
-          <td>
-            <ul>
-              <% videos.each do |video| %>
-              <li><%= video %></li>
-              <% end %>
-            </ul>
-          </td>
-        </tr>
-      <% end %>
-    </table>
-  </div>
-  <div>
-    <table class="popularity-table">
-      <tr><th colspan="2"><h3>по языкам</h3></th></tr>
-      <% @language_videos.each do |language, videos| %>
-        <tr><th><%= language %></th>
-          <td>
-            <ul>
-              <% videos.each do |video| %>
-              <li><%= video %></li>
-              <% end %>
-            </ul>
-          </td>
-        </tr>
-      <% end %>
-    </table>
+<div class="border rounded">
+  <div class="container mb-4">
+    <h1>Популярность видео</h1>
+    <div class="popularity-container">
+      <div>
+        <table border="1" class="popularity-table">
+          <tr><th colspan="2"><h3>по категориям</h3></th></tr>
+          <% @category_videos.each do |category_name, views_count| %>
+            <tr><th><%= category_name %></th>
+              <td>
+                <%= views_count %> просмотров
+              </td>
+            </tr>
+          <% end %>
+        </table><br>
+      </div>
+      <div>
+        <table border="1" class="popularity-table">
+          <tr><th colspan="2"><h3>по спикерам</h3></th></tr>
+          <% @speaker_videos.each do |speaker_fio, views_count| %>
+            <tr><th><%= speaker_fio %></th>
+              <td>
+                <%= views_count %> просмотров
+              </td>
+            </tr>
+          <% end %>
+        </table><br>
+      </div>
+      <div>
+        <table border="1" class="popularity-table">
+          <tr><th colspan="2"><h3>по языкам</h3></th></tr>
+          <% @language_videos.each do |language_name, views_count| %>
+            <tr><th><%= language_name %></th>
+              <td>
+                <%= views_count %> просмотров
+              </td>
+            </tr>
+          <% end %>
+        </table>
+      </div>
+    </div>
   </div>
 </div>

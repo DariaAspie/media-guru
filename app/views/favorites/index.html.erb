@@ -1,11 +1,62 @@
-<div class="border rounded">
+<div class="border rounded mx-4">
     <div class="container mb-4">
       <br>
         <h1>Избранные</h1><br>
         <% if current_user.favorites.empty? %>
           <h2 class="text-center p-4">У вас нет избранных видео</h2>
         <% else %>
-          <% current_user.favorites.reverse.each_with_index do |favirite, index| %>
+        <%= form_with url: favorites_path, method: :get do |f| %>
+          <div class="search-form">
+            <div class="input-group">
+              <%= f.text_field :search, class: "form-control", placeholder: "Поиск" %>
+              <%= f.submit "Поиск", class: "btn btn-outline-secondary search" %>
+            </div>
+          </div>
+        <% end %>
+          <%= form_with url: favorites_path, method: :get do |f| %>
+            <div class="filter-container">
+              <div>
+                <%= f.collection_select :tag_id,
+                                        Tag.all,
+                                        :id,
+                                        :tag_name,
+                                        { prompt: "Тэг", selected: "", disabled: "" },
+                                        { class: "form-control",
+                                          placeholder: "Выбор тега" } %>
+              </div>
+              <div>
+                <%= f.collection_select :language_id,
+                                        Language.all,
+                                        :id,
+                                        :language_name,
+                                        { prompt: "Язык", selected: "", disabled: "" },
+                                        { class: "form-control",
+                                          placeholder: "Выбор языка" } %>
+              </div>
+              <div>
+                <%= f.collection_select :speaker_id,
+                                        Speaker.all,
+                                        :id,
+                                        :speaker_fio,
+                                        { prompt: "Спикер", selected: "", disabled: "" },
+                                        { class: "form-control",
+                                          placeholder: "Выбор спикера" } %>
+              </div>
+              <div>
+                <%= f.collection_select :category_id,
+                                        Category.all,
+                                        :id,
+                                        :category_name,
+                                        { prompt: "Категория", selected: "", disabled: "" },
+                                        { class: "form-control",
+                                          placeholder: "Выбор категории" } %>
+              </div>
+              <div>
+                <%= f.submit "Фильтровать", class: "btn btn-outline-secondary search" %>
+              </div>
+            </div>
+          <% end %>
+          <% @favorites.each_with_index do |favirite, index| %>
             <div class="card card-video">
               <div class="card-body">
                 <table>

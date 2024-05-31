@@ -25,7 +25,8 @@ class MarksController < ApplicationController
     if @mark.save
       redirect_to video_path(@video), notice: 'Оценка успешно добавлена.'
     else
-      redirect_to video_path(@video), status: :unprocessable_entity, notice: 'Оценка не может быть добавлена по какой-то причине.'
+      redirect_to video_path(@video), status: :unprocessable_entity,
+                                      notice: 'Оценка не может быть добавлена по какой-то причине.'
     end
   end
 
@@ -33,7 +34,8 @@ class MarksController < ApplicationController
     if @mark.update(mark_params)
       redirect_to video_path(@video), notice: 'Оценка успешно обновлен'
     else
-      redirect_to video_path(@video), status: :unprocessable_entity, notice: 'Оценка не может быть обновлена по какой-то причине.'
+      redirect_to video_path(@video), status: :unprocessable_entity,
+                                      notice: 'Оценка не может быть обновлена по какой-то причине.'
     end
   end
 

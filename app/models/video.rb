@@ -46,18 +46,16 @@ class Video < ApplicationRecord
       speakers: speakers.pluck(:id)
     }
 
-    video_scope = Video.where.not(id: watched_video_ids)
-                       .left_joins(:tags, :languages, :categories, :speakers)
-                       .where(
-                         'tags.id IN (:tag_ids) OR languages.id IN (:language_ids) OR categories.id IN (:category_ids) OR speakers.id IN (:speaker_ids)',
-                         tag_ids: sorted_characteristics[:tags],
-                         language_ids: sorted_characteristics[:languages],
-                         category_ids: sorted_characteristics[:categories],
-                         speaker_ids: sorted_characteristics[:speakers]
-                       )
-                       .distinct
-                       .order(rating: :desc)
-
-    video_scope
+    Video.where.not(id: watched_video_ids)
+         .left_joins(:tags, :languages, :categories, :speakers)
+         .where(
+           'tags.id IN (:tag_ids) OR languages.id IN (:language_ids) OR categories.id IN (:category_ids) OR speakers.id IN (:speaker_ids)',
+           tag_ids: sorted_characteristics[:tags],
+           language_ids: sorted_characteristics[:languages],
+           category_ids: sorted_characteristics[:categories],
+           speaker_ids: sorted_characteristics[:speakers]
+         )
+         .distinct
+         .order(rating: :desc)
   end
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  before_action :configure_permitted_parameters, only: [:create, :update], if: :devise_controller?
+  before_action :configure_permitted_parameters, only: %i[create update], if: :devise_controller?
 
   protected
 
@@ -13,9 +13,8 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def after_sign_in_path_for(resource)
+  def after_sign_in_path_for(_resource)
     UserActivity.create(user_id: current_user.id, action: 'login', login_time: Time.now.utc)
     root_path
   end
-
 end

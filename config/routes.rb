@@ -6,14 +6,14 @@ Rails.application.routes.draw do
 
   post 'videos/:id/add_to_favorites', to: 'videos#add_to_favorites', as: 'add_to_favorites'
   post 'videos/:id/delete_from_favorites', to: 'videos#delete_from_favorites', as: 'delete_from_favorites'
-  post 'videos/:id/delete_from_videos_favorites', to: 'videos#delete_from_videos_favorites', as: 'delete_from_videos_favorites'
-
+  post 'videos/:id/delete_from_videos_favorites', to: 'videos#delete_from_videos_favorites',
+                                                  as: 'delete_from_videos_favorites'
 
   post 'videos/:id/add_to_watched', to: 'videos#add_to_watched', as: 'add_to_watched'
   post 'videos/:id/delete_from_watched', to: 'videos#delete_from_watched', as: 'delete_from_watched'
   get 'videos/recommendations', to: 'videos#recommendations', as: 'recommendations'
 
-  get 'users_control/index'
+  get 'users_control/index', to: 'users_control#index'
 
   get 'users_control/user_activity_report', to: "users_control#user_activity_report", format: :pdf
   get 'videos/popularity_report', to: "videos#popularity_report", format: :pdf

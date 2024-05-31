@@ -290,13 +290,25 @@ option {
         border: 1px solid;
         border-collapse: collapse;
     }
-
-    th {
-        width: 5% !important;
-    }
 }
 
 .popularity-container{
     display: flex;
     justify-content: flex-start;
+}
+
+.search-form {
+    width: 50%;
+}
+
+.popularity-report {
+    height: 100% !important;
+}
+
+.justify-content-evenly {
+    height: 100%;
+}
+
+.pop-card {
+    width: 100%;
 }

@@ -1,10 +1,16 @@
 # frozen_string_literal: true
 
+require './app/services/search_video_service'
+
 class FavoritesController < ApplicationController
   before_action :set_favorite, only: %i[edit show update destroy]
 
   def index
-    @favorites = current_user.favorites.page(params[:page]).per(params[:per_page])
+    Rails.logger.debug "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+++-+\nsearch params"
+    Rails.logger.debug search_params
+    @favorites = SearchVideoService.new(
+      search_params:
+    ).call_favorites(current_user).order('created_at DESC').page(params[:page]).per(params[:per_page])
     @favorite = Favorite.new
   end
 
@@ -26,5 +32,9 @@ class FavoritesController < ApplicationController
 
   def set_favorite
     @favorite = current_user.favorites.find(params[:id])
+  end
+
+  def search_params
+    params.permit(:search, :tag_id, :language_id, :speaker_id, :category_id, :commit)
   end
 end

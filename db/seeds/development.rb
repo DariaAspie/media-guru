@@ -17,9 +17,7 @@ rescue ActiveRecord::RecordInvalid => e
   Rails.logger.debug e.message
 end
 
-Tag.all.each do |i|
-  i.destroy
-end
+Tag.find_each(&:destroy)
 
 TAGS.each do |name|
   Tag.find_or_create_by(
@@ -27,9 +25,7 @@ TAGS.each do |name|
   )
 end
 
-Language.all.each do |i|
-  i.destroy
-end
+Language.find_each(&:destroy)
 
 LANGUAGES.each do |name|
   Language.find_or_create_by(
@@ -37,9 +33,7 @@ LANGUAGES.each do |name|
   )
 end
 
-Category.all.each do |i|
-  i.destroy
-end
+Category.find_each(&:destroy)
 
 CATEGORIES.each do |name|
   Category.find_or_create_by(
@@ -47,9 +41,7 @@ CATEGORIES.each do |name|
   )
 end
 
-Speaker.all.each do |i|
-  i.destroy
-end
+Speaker.find_each(&:destroy)
 
 SPEAKERS.each do |fio|
   Speaker.find_or_create_by(

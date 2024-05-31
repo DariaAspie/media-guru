@@ -7,15 +7,15 @@
           <%= link_to "Каталог", videos_path(per_page: 25), class: "nav-link" %>
         </li>
         <li class="nav-item active">
-          <%= link_to "Рекомендации", recommendations_path(per_page: 25, search: params[:search]), class: "nav-link" %>
+          <%= link_to "Рекомендации", recommendations_path(per_page: 25), class: "nav-link" %>
         </li>
         <li class="nav-item active">
-          <%= link_to "Избранные", favorites_path(per_page: 25, search: params[:search]), class: "nav-link" %>
+          <%= link_to "Избранные", favorites_path(per_page: 25), class: "nav-link" %>
         </li>
       <% end %>
       <% if current_user&.admin? %>
         <li class="nav-item active">
-          <%= link_to "Управление пользователями", users_control_index_path(per_page: 25, search: params[:search]), class: "nav-link" %>
+          <%= link_to "Управление пользователями", users_control_index_path(per_page: 25), class: "nav-link" %>
         </li>
       <% end %>
     </ul>

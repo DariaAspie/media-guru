@@ -2,7 +2,7 @@
 import "@hotwired/turbo-rails"
 import "./controllers"
 import * as bootstrap from "bootstrap"
-
+import "chartkick/chart.js"
 import '@popperjs/core'
 import 'bootstrap'
 import { Application } from "@hotwired/stimulus"

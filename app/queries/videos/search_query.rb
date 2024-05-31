@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Videos
   class SearchQuery
     def initialize(search_params:)
@@ -5,18 +7,30 @@ module Videos
     end
 
     def call
-      fetch_video
-    end
-
-    private
-
-    def fetch_video
       if @search_params[:search].presence
         Video.all.by_name(@search_params[:search])
       else
         filters.reduce(Video.all) { |videos, filter| send(filter, videos) }
       end
     end
+
+    def call_recommendations(current_user)
+      if @search_params[:search].presence
+        Video.sorted_by_user_preferences(current_user).by_name(@search_params[:search])
+      else
+        filters.reduce(Video.sorted_by_user_preferences(current_user)) { |videos, filter| send(filter, videos) }
+      end
+    end
+
+    def call_favorites(current_user)
+      if @search_params[:search].presence
+        current_user.favorites.by_name(@search_params[:search])
+      else
+        filters.reduce(current_user.favorites) { |videos, filter| send(filter, videos) }
+      end
+    end
+
+    private
 
     def filters
       %i[filter_tag filter_language filter_speaker filter_category]
