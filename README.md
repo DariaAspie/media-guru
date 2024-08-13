@@ -1,5 +1,4 @@
 # MEDIA GURU 
-*тут беда с чистотой кода из-за некоторых требований некоторых личностей*
 
 The primary objective of the web application is to furnish a sophisticated tool tailored for the systematic organization of video content belonging to Innovation and Solutions Factory LLC. This innovative application is meticulously crafted to not only house, regulate, and process video materials but also to facilitate seamless accessibility and manipulation for both average users and administrators.
 
